@@ -1,12 +1,11 @@
 import React from "react";
 
-function TodoListItem(props) {
-    return (
-        <li>
-            <span>{props.todo.id}</span>
-            <span>{props.todo.title}</span>
-        </li>
-    );
+function TodoListItem({ todo }) {
+  return (
+    <li>
+      <span>{todo.title}</span>
+    </li>
+  );
 }
 
 export default TodoListItem;
