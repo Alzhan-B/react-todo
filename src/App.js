@@ -14,8 +14,10 @@ import AddTodoForm from "./AddTodoForm";
 
 function App() {
   // const [todoList, setTodoList] = useSemiPersistentState();
-  // const [todoList, setTodoList] = useState(JSON.parse(localStorage.getItem("savedTodoList")) || []);
-  const [todoList, setTodoList] = useState([]);
+  const [todoList, setTodoList] = useState(
+    JSON.parse(localStorage.getItem("savedTodoList")) || []
+  );
+  // const [todoList, setTodoList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -56,11 +58,15 @@ function App() {
       {isLoading ? (
         <p>Loading...</p>
       ) : (
-        <TodoList todoList={todoList} onRemoveTodo={removeTodo} />
+        <>
+          <h1>Todo List</h1>
+          <AddTodoForm onAddTodo={addTodo} />
+          <TodoList todoList={todoList} onRemoveTodo={removeTodo} />
+        </>
       )}
 
-      <h1>Todo List</h1>
-      <AddTodoForm onAddTodo={addTodo} />
+      {/* <h1>Todo List</h1>
+      <AddTodoForm onAddTodo={addTodo} /> */}
       {/* <TodoList todoList={todoList} onRemoveTodo={removeTodo} /> */}
     </>
   );
