@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TodoList from "./TodoList";
 import AddTodoForm from "./AddTodoForm";
+import "./App.css";
 
 function App() {
   const [todoList, setTodoList] = useState([]);
@@ -18,23 +19,27 @@ function App() {
     try {
       const response = await fetch(url, options);
 
-      console.log(response);
+      // console.log(response);
 
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
       }
 
       const data = await response.json();
+      // console.log(data);
+      console.log(data.records);
       const todos = data.records.map((todo) => {
         const newTodo = {
           id: todo.id,
           title: todo.fields.title,
+          createdTime: todo.createdTime,
         };
         return newTodo;
       });
+      console.log(todos); //checking the todo list
 
       setTodoList(todos);
-      console.log(data);
+      
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -61,26 +66,25 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            isLoading ? (
-              <p>Loading...</p>
-            ) : (
-              <>
-                <h1>Todo List</h1>
-                <AddTodoForm onAddTodo={addTodo} />
-                <TodoList todoList={todoList} onRemoveTodo={removeTodo} />
-              </>
-            )
-          }
-        />
-        <Route
-          path="/new"
-          element={<h1>New Todo List</h1>}
-        />
-      </Routes>
+      <div className="App-content">
+        <Routes>
+          <Route
+            path="/"
+            element={
+              isLoading ? (
+                <p>Loading...</p>
+              ) : (
+                <>
+                  <h1 className="App-heading">Todo List</h1>
+                  <AddTodoForm onAddTodo={addTodo} />
+                  <TodoList todoList={todoList} onRemoveTodo={removeTodo} />
+                </>
+              )
+            }
+          />
+          <Route path="/new" element={<h1>New Todo List</h1>} />
+        </Routes>
+      </div>
     </BrowserRouter>
   );
 }
