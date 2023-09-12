@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import TodoList from "./TodoList";
-import AddTodoForm from "./AddTodoForm";
-import "./App.css";
+import TodoList from "./components/TodoList";
+import AddTodoForm from "./components/AddTodoForm";
+import "./components/App.css";
 
 function App() {
   const [todoList, setTodoList] = useState([]);
@@ -19,7 +19,7 @@ function App() {
     try {
       const response = await fetch(url, options);
 
-      // console.log(response);
+      console.log(response);
 
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
@@ -28,18 +28,21 @@ function App() {
       const data = await response.json();
       // console.log(data);
       console.log(data.records);
-      const todos = data.records.map((todo) => {
-        const newTodo = {
-          id: todo.id,
-          title: todo.fields.title,
-          createdTime: todo.createdTime,
-        };
-        return newTodo;
-      });
+      const todos = data.records
+        .sort((a, b) =>
+          new Date(a.createdTime) < new Date(b.createdTime) ? -1 : 1
+        )
+        .map((todo) => {
+          const newTodo = {
+            id: todo.id,
+            title: todo.fields.title,
+            createdTime: todo.createdTime,
+          };
+          return newTodo;
+        });
       console.log(todos); //checking the todo list
 
       setTodoList(todos);
-      
     } catch (error) {
       console.error("Error fetching data:", error);
     }
