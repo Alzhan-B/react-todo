@@ -7,6 +7,7 @@ import "./components/App.css";
 function App() {
   const [todoList, setTodoList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [sortAscending, setSortAscending] = useState(true);
 
   async function fetchData() {
     const options = {};
@@ -26,12 +27,8 @@ function App() {
       }
 
       const data = await response.json();
-      // console.log(data);
-      console.log(data.records);
-      const todos = data.records
-        .sort((a, b) =>
-          new Date(a.createdTime) < new Date(b.createdTime) ? -1 : 1
-        )
+      
+      const todos = data.records        
         .map((todo) => {
           const newTodo = {
             id: todo.id,
@@ -40,7 +37,12 @@ function App() {
           };
           return newTodo;
         });
-      console.log(todos); //checking the todo list
+
+      // const sortedTodos = [...todos].sort((a, b) =>
+      //   sortAscending
+      //     ? new Date(a.createdTime) - new Date(b.createdTime)
+      //     : new Date(b.createdTime) - new Date(a.createdTime)
+      // );
 
       setTodoList(todos);
     } catch (error) {
@@ -60,16 +62,31 @@ function App() {
   }, [todoList, isLoading]);
 
   function addTodo(newTodo) {
-    setTodoList([...todoList, newTodo]);
+    const updatedTodoList = [...todoList, newTodo];
+
+    const sortedTodos = updatedTodoList.sort((a, b) =>
+      sortAscending 
+      ? new Date(a.createdTime) - new Date(b.createdTime)
+      : new Date(b.createdTime) - new Date(a.createdTime)
+    );
+
+    setTodoList(sortedTodos);
+  }
+
+  function toggleSortOrder() {
+    setSortAscending((prevSortOrder) => !prevSortOrder);
   }
 
   function removeTodo(id) {
     setTodoList(todoList.filter((item) => item.id !== id));
   }
 
-  return (
+  return (   
     <BrowserRouter>
       <div className="App-content">
+        <button onClick={toggleSortOrder}>
+          Toggle Sort Order: {sortAscending ? "Ascending" : "Discending"}
+        </button>
         <Routes>
           <Route
             path="/"
