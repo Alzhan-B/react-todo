@@ -46,3 +46,18 @@
   .ListItem button:hover {
     background-color: #d9534f;
   }
+
+  .ToggleButton {
+    margin-top: 250px;
+    padding: 10px;
+    background-color: #379;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .ToggleButton:hover {
+    background-color: #266495;
+  }

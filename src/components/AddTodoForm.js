@@ -10,12 +10,26 @@ function AddTodoForm({ onAddTodo }) {
     setTodoTitle(newTodoTitle);
   }
 
-  function handleAddTodo(event) {
+  // async function handleAddTodo(event) {
+  //   event.preventDefault();
+  //   onAddTodo({
+  //     title: todoTitle,
+  //     id: Date.now(),
+  //   });
+  //   console.log(todoTitle);
+  //   setTodoTitle("");
+  // }
+
+  async function handleAddTodo(event) {
     event.preventDefault();
-    onAddTodo({
-      title: todoTitle,
+    if (!todoTitle) return;
+
+    const newTodo = {
+      title:todoTitle,
       id: Date.now(),
-    });
+    }
+
+    onAddTodo(newTodo);
     console.log(todoTitle);
     setTodoTitle("");
   }
