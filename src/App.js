@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TodoList from "./components/TodoList";
 import AddTodoForm from "./components/AddTodoForm";
+import style from "./components/TodoListItem.module.css";
 import "./components/App.css";
 
 function App() {
   const [todoList, setTodoList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [sortAscending, setSortAscending] = useState(true);
 
   async function fetchData() {
     const options = {};
@@ -26,21 +28,12 @@ function App() {
       }
 
       const data = await response.json();
-      // console.log(data);
-      console.log(data.records);
-      const todos = data.records
-        .sort((a, b) =>
-          new Date(a.createdTime) < new Date(b.createdTime) ? -1 : 1
-        )
-        .map((todo) => {
-          const newTodo = {
-            id: todo.id,
-            title: todo.fields.title,
-            createdTime: todo.createdTime,
-          };
-          return newTodo;
-        });
-      console.log(todos); //checking the todo list
+
+      const todos = data.records.map((todo) => ({
+        id: todo.id,
+        title: todo.fields.title,
+        createdTime: todo.createdTime,
+      }));
 
       setTodoList(todos);
     } catch (error) {
@@ -53,23 +46,97 @@ function App() {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (isLoading === false) {
-      localStorage.setItem("savedTodoList", JSON.stringify(todoList));
+  async function addTodo(newTodo) {
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
+      },
+      body: JSON.stringify({
+        fields: {
+          title: newTodo.title,
+        },
+      }),
+    };
+
+    try {
+      const response = await fetch(
+        `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}`,
+        options
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      const todo = await response.json();
+
+      const updatedTodo = {
+        id: todo.id,
+        title: todo.fields.title,
+        createdTime: todo.createdTime,
+      };
+
+      setTodoList([...todoList, updatedTodo]);
+    } catch (error) {
+      console.error("Error adding todo:", error);
     }
-  }, [todoList, isLoading]);
-
-  function addTodo(newTodo) {
-    setTodoList([...todoList, newTodo]);
   }
 
-  function removeTodo(id) {
-    setTodoList(todoList.filter((item) => item.id !== id));
+  function toggleSortOrder() {
+    setSortAscending((prevSortOrder) => !prevSortOrder);
   }
+
+  async function removeTodo(id) {
+    const options = {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
+      },
+    };
+
+    try {
+      const response = await fetch(
+        `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}/${id}`,
+        options
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      setTodoList((prevTodoList) =>
+        prevTodoList.filter((item) => item.id !== id)
+      );
+    } catch (error) {
+      console.error("Error removing todo:", error);
+    }
+  }
+
+  console.log(sortAscending);
+
+  const sortedTodos = [...todoList].sort((a, b) =>
+    sortAscending
+      ? new Date(a.createdTime) - new Date(b.createdTime)
+      : new Date(b.createdTime) - new Date(a.createdTime)
+  );
+
+  console.log(sortedTodos);
 
   return (
     <BrowserRouter>
       <div className="App-content">
+        <h1 className="App-heading">
+          YOUR FAVORITE <br></br> To-Do List:
+        </h1>
+        <button
+          className={`ToggleButton ${style.toggleButton}`}
+          onClick={toggleSortOrder}
+        >
+          Toggle Sort : &nbsp; &nbsp;{" "}
+          {sortAscending ? " Ascending ⬆️" : " Descending ⬇️ "}
+        </button>
         <Routes>
           <Route
             path="/"
@@ -78,9 +145,8 @@ function App() {
                 <p>Loading...</p>
               ) : (
                 <>
-                  <h1 className="App-heading">Todo List</h1>
                   <AddTodoForm onAddTodo={addTodo} />
-                  <TodoList todoList={todoList} onRemoveTodo={removeTodo} />
+                  <TodoList todoList={sortedTodos} onRemoveTodo={removeTodo} />
                 </>
               )
             }

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import InputWithLabel from "./InputWithLabel";
-import PropTypes from "prop-types"
+import PropTypes from "prop-types";
 
 function AddTodoForm({ onAddTodo }) {
   const [todoTitle, setTodoTitle] = useState("");
@@ -10,23 +10,31 @@ function AddTodoForm({ onAddTodo }) {
     setTodoTitle(newTodoTitle);
   }
 
-  function handleAddTodo(event) {
+  async function handleAddTodo(event) {
     event.preventDefault();
-    onAddTodo({
+    if (!todoTitle) return;
+
+    const newTodo = {
       title: todoTitle,
       id: Date.now(),
-    });
+    };
+
+    onAddTodo(newTodo);
     console.log(todoTitle);
     setTodoTitle("");
   }
 
   return (
-    <form onSubmit={handleAddTodo}>
-      <InputWithLabel value={todoTitle} onChange={handleTitleChange}>
-        <strong>Title</strong>
-        &nbsp;  
+    <form className="Input" onSubmit={handleAddTodo}>
+      <InputWithLabel
+        className="input"
+        value={todoTitle}
+        onChange={handleTitleChange}
+      >
+        <strong>Task:</strong>
+        &nbsp;
       </InputWithLabel>
-      &nbsp;
+      &nbsp; &nbsp;
       <button type="submit">Add</button>
     </form>
   );
@@ -34,6 +42,6 @@ function AddTodoForm({ onAddTodo }) {
 
 AddTodoForm.propTypes = {
   onAddTodo: PropTypes.func.isRequired,
-}
+};
 
 export default AddTodoForm;

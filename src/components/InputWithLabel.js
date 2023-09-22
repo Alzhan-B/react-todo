@@ -1,6 +1,6 @@
 import React from "react";
 import { useRef, useEffect } from "react";
-import PropTypes from "prop-types"
+import PropTypes from "prop-types";
 
 function InputWithLabel(props) {
   const inputRef = useRef();
@@ -31,6 +31,6 @@ InputWithLabel.propTypes = {
   type: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
-}
+};
 
 export default InputWithLabel;
