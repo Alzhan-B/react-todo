@@ -10,6 +10,12 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [sortAscending, setSortAscending] = useState(true);
 
+  const sortedTodos = todoList.sort((a, b) =>
+    sortAscending
+      ? new Date(a.createdTime) - new Date(b.createdTime)
+      : new Date(b.createdTime) - new Date(a.createdTime)
+  );
+
   async function fetchData() {
     const options = {};
     options.method = "GET";
@@ -115,14 +121,14 @@ function App() {
   }
 
   console.log(sortAscending);
-
-  const sortedTodos = [...todoList].sort((a, b) =>
-    sortAscending
-      ? new Date(a.createdTime) - new Date(b.createdTime)
-      : new Date(b.createdTime) - new Date(a.createdTime)
-  );
-
   console.log(sortedTodos);
+
+  async function updateTodoTitle(todoId, newTitle) {
+    const updatedTodoList = todoList.map((todo) =>
+      todo.id === todoId ? { ...todo, title: newTitle } : todo
+    );
+    setTodoList(updatedTodoList);
+  }
 
   return (
     <BrowserRouter>
@@ -134,7 +140,7 @@ function App() {
           className={`ToggleButton ${style.toggleButton}`}
           onClick={toggleSortOrder}
         >
-          Toggle Sort : &nbsp; &nbsp;{" "}
+          Toggle Sort : &nbsp; &nbsp;
           {sortAscending ? " Ascending ⬆️" : " Descending ⬇️ "}
         </button>
         <Routes>
@@ -146,7 +152,11 @@ function App() {
               ) : (
                 <>
                   <AddTodoForm onAddTodo={addTodo} />
-                  <TodoList todoList={sortedTodos} onRemoveTodo={removeTodo} />
+                  <TodoList
+                    todoList={sortedTodos}
+                    onRemoveTodo={removeTodo}
+                    onUpdateTodoTitle={updateTodoTitle}
+                  />
                 </>
               )
             }
