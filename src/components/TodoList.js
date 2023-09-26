@@ -2,7 +2,7 @@ import React from "react";
 import TodoListItem from "./TodoListItem";
 import PropTypes from "prop-types";
 
-function TodoList({ todoList, onRemoveTodo }) {
+function TodoList({ todoList, onRemoveTodo, onUpdateTodoTitle }) {
   return (
     <div className="TodoLlist">
       <ul>
@@ -12,6 +12,7 @@ function TodoList({ todoList, onRemoveTodo }) {
               key={todo.id}
               todo={todo}
               onRemoveTodo={onRemoveTodo}
+              onUpdateTodoTitle={onUpdateTodoTitle}
             />
           );
         })}
@@ -23,6 +24,7 @@ function TodoList({ todoList, onRemoveTodo }) {
 TodoList.propTypes = {
   todoList: PropTypes.array.isRequired,
   onRemoveTodo: PropTypes.func.isRequired,
+  onUpdateTodoTitle: PropTypes.func.isRequired,
 };
 
 export default TodoList;

@@ -16,7 +16,7 @@
 }
 
 .toggleButton:hover {
-  background-color: #3f5d6d;
+  background-color: #54ac8a;
 }
 
 .toggleButton:focus {
@@ -35,7 +35,6 @@
 
 .todoItem:hover {
   transform: scale(1.02);
-  /* background-color: #9efae6;  */
 }
 
 .todoTitle {
@@ -74,7 +73,7 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-  background: green;
+  background: rgb(60, 174, 85);
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 1.5);
 }
 
@@ -84,4 +83,32 @@ button[type="submit"]:hover {
 
 .doneItem {
   background-color: #e5fadd;
+}
+
+.editButton {
+  background-color: rgb(92, 133, 187);
+  color: white;
+  margin-left: 5%;
+  padding: 0.67% 2% 0.61% 2%;
+  border-radius: 15%;
+  border-color: rgb(123, 174, 201);
+}
+
+.editButton:hover {
+  background-color: rgb(61, 85, 155);
+  cursor: pointer;
+}
+
+.saveButton {
+  background-color: rgb(49, 135, 95);
+  color: white;
+  margin-left: 5%;
+  padding: 0.61% 2% 0.61% 2%;
+  border-radius: 15%;
+  border-color: rgb(114, 171, 236);
+}
+
+.saveButton:hover {
+  background-color: rgb(60, 174, 85);
+  cursor: pointer;
 }
